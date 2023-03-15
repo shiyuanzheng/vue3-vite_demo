@@ -6,6 +6,7 @@ import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import App from './App.vue'
 import router from './router'
 import pinia from './stores/pinia'
+import http from '@/utils/request'
 
 import '@/styles/main.scss'
 
@@ -18,5 +19,6 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
   if (key === 'Menu') app.component('IconMenu', component)
   else app.component(key, component)
 }
+app.config.globalProperties.$http = http
 
 app.mount('#app')

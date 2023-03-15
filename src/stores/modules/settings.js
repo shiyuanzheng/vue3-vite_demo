@@ -18,7 +18,9 @@ export const useSettingsStore = defineStore('settings', {
     // 内容, 标签页(默认添加首页)
     contentTabsActiveName: 'home'
   }),
-  getters: {},
+  getters: {
+    getAsideCollapse: (state) => state.asideCollapse
+  },
   actions: {
     setNavbarLayoutType(val) {
       this.navbarLayoutType = val
@@ -27,7 +29,6 @@ export const useSettingsStore = defineStore('settings', {
       this.sidebarLayoutSkin = val
     },
     setAsideCollapse(bool) {
-      console.log('%c [ bool ] ', 'font-size:13px; background:pink; color:#bf2c9f;', bool)
       this.asideCollapse = bool
     },
     setSidebarMenuActiveName(val) {

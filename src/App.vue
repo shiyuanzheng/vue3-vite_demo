@@ -1,14 +1,8 @@
-<script setup>
-import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
-import Layout from '@/layout/index.vue'
-</script>
+<script setup></script>
 
 <template>
   <el-config-provider>
-    <transition name="el-fade-in-linear">
-      <Layout />
-    </transition>
+    <RouterView />
   </el-config-provider>
 </template>
 

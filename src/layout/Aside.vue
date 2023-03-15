@@ -1,7 +1,7 @@
 <template lang="">
   <el-aside :class="['common-aside', 'fixed']">
     <el-scrollbar>
-      <el-menu :collapse="settings.asideCollapse">
+      <el-menu :collapse="settings.getAsideCollapse">
         <el-sub-menu index="1">
           <template #title>
             <el-icon><location /></el-icon>
@@ -34,22 +34,18 @@
         </el-menu-item>
       </el-menu>
 
-      <el-radio-group
-        v-model="settings.asideCollapse"
-        style="margin-top: 20px"
-        @change="handleChange"
-      >
-        <el-radio-button :label="false">expand</el-radio-button>
-        <el-radio-button :label="true">collapse</el-radio-button>
-      </el-radio-group>
+      <el-button
+        :icon="settings.getAsideCollapse ? 'Expand' : 'Fold'"
+        @click="settings.setAsideCollapse(!settings.getAsideCollapse)"
+      />
     </el-scrollbar>
   </el-aside>
 </template>
 
 <script setup>
-import { useSettingsStore } from '@/stores'
+import { useSettingsStore, usePermissionStore } from '@/stores'
 const settings = useSettingsStore()
-const handleChange = (e) => {
-  settings.setAsideCollapse(e)
-}
+
+const permission = usePermissionStore()
+const routes = permission.getMenuList
 </script>

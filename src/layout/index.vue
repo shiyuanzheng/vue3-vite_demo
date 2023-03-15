@@ -1,5 +1,5 @@
 <template lang="">
-  <div :class="['common-layout', asideCollapse && 'aside-collapse']">
+  <div :class="['common-layout', getAsideCollapse && 'aside-collapse']">
     <el-container direction="vertical">
       <Header />
       <el-container style="padding-top: 60px">
@@ -19,7 +19,7 @@ import { debounce } from 'lodash-es'
 import { useSettingsStore } from '@/stores'
 
 const settings = useSettingsStore()
-const { asideCollapse } = toRefs(settings)
+const { getAsideCollapse } = toRefs(settings)
 const { setAsideCollapse } = settings
 
 onMounted(() => {
@@ -30,6 +30,6 @@ onUnmounted(() => {
 })
 
 const handleWindowResize = debounce(() => {
-  setAsideCollapse(document.documentElement['clientWidth'] <= 992 || asideCollapse.value)
+  setAsideCollapse(document.documentElement['clientWidth'] <= 992 || getAsideCollapse.value)
 }, 200)
 </script>
