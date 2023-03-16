@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import routes from './routes'
-import { usePermissionStore } from '@/stores'
-import { getToken } from '@/utils/cookie'
+import { usePermissionStore, useUserStore } from '@/stores'
+import { getToken, removeToken } from '@/utils/cookie'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 
@@ -14,26 +14,49 @@ const router = createRouter({
   routes: routes
 })
 
-//路由全局前置守卫
+/**
+ * @description: 路由全局前置守卫
+ * @param {*}
+ * @return {*}
+ */
 router.beforeEach(async (to, from, next) => {
-  const { menuListFun, getIsDynamicAddedRoute } = usePermissionStore()
+  const { generateMenus, getIsDynamicAddedRoute, getAddRoutes } = usePermissionStore()
+  const { setLogout } = useUserStore()
+
   NProgress.start()
-  console.log('路由全局前置守卫', to, from)
   if (getToken()) {
     if (getIsDynamicAddedRoute) {
       NProgress.done()
       return next()
     }
     try {
-      await menuListFun()
-      next()
+      console.log('%c [ to ] ', 'font-size:13px; background:pink; color:#bf2c9f;', to)
+      const Routes = await generateMenus()
+      console.log('%c [ Routes ] ', 'font-size:13px; background:pink; color:#bf2c9f;', Routes)
+      router.addRoute([
+        {
+          name: 'main-dynamic-menu',
+          children: Routes
+        },
+        { path: '*', redirect: { name: '404' } }
+      ])
+      console.log(
+        '%c [ router ] ',
+        'font-size:13px; background:pink; color:#bf2c9f;',
+        router.getRoutes()
+      )
+      next({ ...to, replace: true })
     } catch (error) {
+      throw error
       next('/login')
+      setLogout()
     }
   } else {
     if (whiteRouteList.includes(to.path)) next()
-    else next(`/login`)
-
+    else {
+      next('/login')
+      setLogout()
+    }
     NProgress.done()
   }
 })

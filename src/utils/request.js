@@ -4,6 +4,7 @@ import qs from 'qs'
 import isPlainObject from 'lodash-es/isPlainObject'
 import { getToken } from '@/utils/cookie'
 import { ElNotification } from 'element-plus'
+import { useUserStore } from '@/stores'
 
 const notificationError = (title, message) =>
   ElNotification.error({
@@ -12,12 +13,6 @@ const notificationError = (title, message) =>
     showClose: false,
     duration: 3500
   })
-
-console.log(
-  '%c [ import.meta.VITE_API_URL ] ',
-  'font-size:13px; background:pink; color:#bf2c9f;',
-  import.meta.env.VITE_API_URL
-)
 
 const http = axios.create({
   baseURL: process.env.NODE_ENV === 'production' ? import.meta.env.VITE_API_URL : '/api',
@@ -70,7 +65,6 @@ function alertError(code, errorMsg) {
 }
 
 const errorHandler = (error) => {
-  console.log('%c [ error ] ', 'font-size:13px; background:pink; color:#bf2c9f;', error)
   const errRes = error.response
   if (error.code === 'ERR_CANCELED') Message.warning('资源请求已取消')
   else {
