@@ -1,9 +1,9 @@
 <template lang="">
   <div :class="['common-layout', getAsideCollapse && 'aside-collapse']">
-    <el-container direction="vertical">
-      <Header />
-      <el-container style="padding-top: 60px">
-        <Aside />
+    <el-container direction="horizontal">
+      <Aside />
+      <el-container direction="vertical" class="common-layout-right">
+        <Header />
         <Main />
       </el-container>
     </el-container>

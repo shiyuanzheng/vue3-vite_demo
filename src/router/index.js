@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import routes from './routes'
+import constantRouterMap from './routes'
 import { usePermissionStore, useUserStore } from '@/stores'
 import { getToken, removeToken } from '@/utils/cookie'
 import NProgress from 'nprogress'
@@ -11,7 +11,7 @@ const whiteRouteList = ['/login']
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-  routes: routes
+  routes: constantRouterMap
 })
 
 /**
@@ -20,9 +20,8 @@ const router = createRouter({
  * @return {*}
  */
 router.beforeEach(async (to, from, next) => {
-  const { generateMenus, getIsDynamicAddedRoute, getAddRoutes } = usePermissionStore()
+  const { generateMenus, getIsDynamicAddedRoute } = usePermissionStore()
   const { setLogout } = useUserStore()
-
   NProgress.start()
   if (getToken()) {
     if (getIsDynamicAddedRoute) {
@@ -30,26 +29,16 @@ router.beforeEach(async (to, from, next) => {
       return next()
     }
     try {
-      console.log('%c [ to ] ', 'font-size:13px; background:pink; color:#bf2c9f;', to)
-      const Routes = await generateMenus()
-      console.log('%c [ Routes ] ', 'font-size:13px; background:pink; color:#bf2c9f;', Routes)
-      router.addRoute([
-        {
-          name: 'main-dynamic-menu',
-          children: Routes
-        },
-        { path: '*', redirect: { name: '404' } }
-      ])
-      console.log(
-        '%c [ router ] ',
-        'font-size:13px; background:pink; color:#bf2c9f;',
-        router.getRoutes()
-      )
-      next({ ...to, replace: true })
+      const asyncRoutes = await generateMenus()
+      asyncRoutes.forEach((route) => {
+        router.addRoute('layout', route)
+      })
+
+      next({ path: `${to.path}`, replace: true })
     } catch (error) {
-      throw error
       next('/login')
       setLogout()
+      throw new Error(error)
     }
   } else {
     if (whiteRouteList.includes(to.path)) next()

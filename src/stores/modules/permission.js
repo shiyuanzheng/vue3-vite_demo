@@ -1,65 +1,72 @@
 import { defineStore } from 'pinia'
 import request from '@/utils/request'
-import Layout from '@/layout/index.vue'
+
+let modules = import.meta.glob('../../views/**/index.vue')
+
+// const componentCache = new Map()
+// function loadView(URL) {
+//   if (componentCache.has(URL)) {
+//     return componentCache.get(URL)
+//   }
+//   const component = () => import(`../../views/${URL.replace(/\/:id\*/g, '')}/index.vue`)
+//   componentCache.set(URL, component)
+//   return component
+// }
 
 export const usePermissionStore = defineStore('permission', {
-  persist: true,
+  // persist: true, //固化数据，存储在localStorage
   state: () => ({
     menuList: [],
-    addRoutes: [],
+    dynamicMenuRoutes: [],
     isDynamicAddedRoute: false
   }),
   getters: {
     getMenuList: (state) => state.menuList,
-    getAddRoutes: (state) => state.menuList,
+    getDynamicMenuRoutes: (state) => state.dynamicMenuRoutes,
     getIsDynamicAddedRoute: (state) => state.isDynamicAddedRoute
   },
   actions: {
     setMenuList(list) {
-      this.menuList = list
+      this.$patch({ menuList: list })
     },
-    setAddRoutes(list) {
-      console.log('%c [ list ] ', 'font-size:13px; background:pink; color:#bf2c9f;', list)
-      this.addRoutes = list
+    setDynamicMenuRoutes(routes) {
+      this.$patch({ dynamicMenuRoutes: routes })
     },
     setIsDynamicAddedRoute(bool) {
-      this.isDynamicAddedRoute = bool
+      this.$patch({ isDynamicAddedRoute: bool })
     },
 
-    generateMenus() {
-      return new Promise(async (resolve, reject) => {
-        try {
-          const { data } = await request.get('sys/menu/nav')
-          this.$patch({ menuList: data })
-          const routes = await this.fnAddDynamicMenuRoutes(data)
-          this.setAddRoutes(routes)
-          this.setIsDynamicAddedRoute(true)
-          resolve(routes)
-        } catch (error) {
-          reject(error)
-        }
-      })
-    },
-
-    fnAddDynamicMenuRoutes(data) {
-      if (data.length) {
-        return data.map((item) => {
-          const menu = {
-            path: item.url,
-            component: Layout,
-            name: item.name,
-            meta: {
-              menuId: item.id,
-              title: item.name,
-              icon: item.icon
-            }
-          }
-          if (item.children && item.children.length > 0) {
-            menu.children = this.fnAddDynamicMenuRoutes(item.children)
-          }
-          return menu
-        })
+    async generateMenus() {
+      try {
+        const { data } = await request.get('sys/menu/nav')
+        const routes = await this.fnAddDynamicMenuRoutes(data)
+        this.setMenuList(data)
+        this.setDynamicMenuRoutes(routes)
+        this.setIsDynamicAddedRoute(true)
+        return routes
+      } catch (error) {
+        throw error
       }
+    },
+
+    async fnAddDynamicMenuRoutes(menus = [], routes = []) {
+      const temp = []
+      for (const { url = '', icon, id, name: title, children = [] } of menus) {
+        if (children && children.length >= 1) {
+          temp.push(...children)
+          continue
+        }
+        const URL = url || ''.replace(/{{([^}}]+)?}}/g, (_, expr) => Function(`return ${expr}`)())
+        const path = `/${URL}`
+        const name = URL.replace(/\//g, '-').replace(/-:id\*/g, '')
+        const component = modules[`../../views/${URL.replace(/\/:id\*/g, '')}/index.vue`]
+        const menu = { path, component, name, meta: { menuId: id, title, icon } }
+        routes.push(menu)
+      }
+      if (temp.length >= 1) {
+        return await this.fnAddDynamicMenuRoutes(temp, routes)
+      }
+      return routes
     }
   }
 })

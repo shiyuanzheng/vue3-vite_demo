@@ -36,23 +36,31 @@ body {
 
 .common-layout {
   min-height: 100vh;
-}
 
-.common-header {
-  display: flex;
-  position: relative;
-  &.fixed {
-    position: fixed;
-    top: 0;
-    width: 100%;
-    z-index: 100;
-  }
-
-  .header-logo {
-    a {
-      display: inline-flex;
+  .common-aside {
+    display: flex;
+    flex-direction: column;
+    width: $--asider-width;
+    height: 100%;
+    transition: all 0.3s;
+    overflow: hidden;
+    box-sizing: content-box;
+    box-shadow: 2px 0 8px 0 rgba(29, 35, 41, 0.05);
+    &.fixed {
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      z-index: $--layout-index;
+    }
+    .el-menu {
+      border-right: none;
+    }
+    .aside-logo > a {
+      display: flex;
       align-items: center;
-      height: 100%;
+      padding-left: 16px;
+      height: 70px;
       & > img {
         display: inline-block;
         width: 30px;
@@ -60,37 +68,44 @@ body {
       }
       & > span {
         margin-left: 10px;
-        font-size: 22px;
+        font-size: 16px;
+        white-space: nowrap;
       }
     }
+    .aside-collapse {
+      padding: 16px;
+      box-sizing: content-box;
+    }
+  }
+
+  .common-header {
+    display: flex;
+    margin-left: $--asider-width;
+    transition: all 0.3s;
+    box-shadow: 0 2px 8px 0 rgba(29, 35, 41, 0.05);
+    &.fixed {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: $--layout-index;
+    }
+  }
+
+  .common-main {
+    padding: 24px;
+    margin-left: $--asider-width;
+    margin-top: $--header-height;
+    transition: all 0.3s;
   }
 }
 
-.common-aside {
-  width: $--asider-width;
-  border-right: solid 1px var(--el-menu-border-color);
-  transition: all 0.3s;
-  &.fixed {
-    position: fixed;
-    top: 60px;
-    left: 0;
-    bottom: 0;
-  }
-  .el-menu {
-    border-right: none;
-  }
-}
-
-.common-main {
-  padding: 24px;
-  margin-left: $--asider-width;
-  transition: all 0.3s;
-}
-
-.aside-collapse {
+.common-layout.aside-collapse {
   .common-aside {
     width: $--aside-collapse-width;
   }
+
+  .common-header,
   .common-main {
     margin-left: $--aside-collapse-width;
   }

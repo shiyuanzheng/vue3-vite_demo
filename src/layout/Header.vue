@@ -1,11 +1,5 @@
 <template lang="">
   <el-header class="common-header fixed">
-    <div class="header-logo">
-      <a href="/">
-        <img alt="logo" class="logo" src="@/assets/logo.svg" />
-        <span>ElementPlus-Admin</span>
-      </a>
-    </div>
     <el-menu class="" mode="horizontal">
       <el-menu-item index="1">Element Plus</el-menu-item>
       <el-sub-menu index="2">
@@ -31,9 +25,29 @@
         </button>
       </el-menu-item>
     </el-menu>
+    <el-switch
+      v-model="darkStatus"
+      class="mt-2"
+      style="margin-left: 24px"
+      inline-prompt
+      active-icon="Check"
+      inactive-icon="Close"
+    />
+    <i-material-symbols-3k-plus-outline />
+    <i-ep-aim />
+    <IconPhAlien />
+    <!-- <i-ph-airplane-light /> -->
+    <!-- <i-ic-baseline-5g /> -->
   </el-header>
 </template>
 
 <script setup>
-import { toggleDark } from '@/composables'
+import { ref } from 'vue'
+import { toggleDark, isDark } from '@/composables'
+console.log('%c [ isDark ] ', 'font-size:13px; background:pink; color:#bf2c9f;', isDark)
+const darkStatus = ref(isDark)
+import IconBaseline5g from '~icons/ic/baseline-5g'
+import IconPhAlien from '~icons/ph/alien'
+// import IconEpAim from '~icons/ep/aim'
+// console.log('%c [ IconEpAim ] ', 'font-size:13px; background:pink; color:#bf2c9f;', IconEpAim)
 </script>

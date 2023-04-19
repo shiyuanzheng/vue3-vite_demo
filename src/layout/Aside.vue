@@ -1,51 +1,30 @@
 <template lang="">
-  <el-aside :class="['common-aside', 'fixed']">
+  <el-aside class="common-aside fixed">
+    <div class="aside-logo">
+      <a href="/">
+        <img alt="logo" class="logo" src="@/assets/logo.svg" />
+        <span v-show="!settings.getAsideCollapse">ElementPlus Admin</span>
+      </a>
+    </div>
     <el-scrollbar>
       <el-menu :collapse="settings.getAsideCollapse">
-        <el-sub-menu index="1">
-          <template #title>
-            <el-icon><location /></el-icon>
-            <span>Navigator One</span>
-          </template>
-          <el-menu-item-group>
-            <template #title><span>Group One</span></template>
-            <el-menu-item index="1-1">item one</el-menu-item>
-            <el-menu-item index="1-2">item two</el-menu-item>
-          </el-menu-item-group>
-          <el-menu-item-group title="Group Two">
-            <el-menu-item index="1-3">item three</el-menu-item>
-          </el-menu-item-group>
-          <el-sub-menu index="1-4">
-            <template #title><span>item four</span></template>
-            <el-menu-item index="1-4-1">item one</el-menu-item>
-          </el-sub-menu>
-        </el-sub-menu>
-        <el-menu-item index="2">
-          <el-icon><icon-menu /></el-icon>
-          <template #title>Navigator Two</template>
-        </el-menu-item>
-        <el-menu-item index="3" disabled>
-          <el-icon><document /></el-icon>
-          <template #title>Navigator Three</template>
-        </el-menu-item>
-        <el-menu-item index="4">
-          <el-icon><setting /></el-icon>
-          <template #title>Navigator Four</template>
-        </el-menu-item>
+        <SubMenu v-for="menu in menus" :key="menu.id" :menu="menu" />
       </el-menu>
-
+    </el-scrollbar>
+    <div class="aside-collapse">
       <el-button
         :icon="settings.getAsideCollapse ? 'Expand' : 'Fold'"
         @click="settings.setAsideCollapse(!settings.getAsideCollapse)"
       />
-    </el-scrollbar>
+    </div>
   </el-aside>
 </template>
 
 <script setup>
+import SubMenu from './AsideSubMenu.vue'
 import { useSettingsStore, usePermissionStore } from '@/stores'
 const settings = useSettingsStore()
 
 const permission = usePermissionStore()
-const routes = permission.getMenuList
+const menus = permission.getMenuList
 </script>

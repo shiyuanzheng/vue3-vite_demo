@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="39px" height="39px" viewBox="0 0 39 39" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>置顶-3@2x</title>
+    <g id="发布提示" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="任务列表/列---置顶" transform="translate(-262.000000, -659.000000)">
+            <g id="置顶-3" transform="translate(262.504311, 659.004311)">
+                <polygon id="矩形" fill="#FA8D14" points="1.49568901 14.0531467 13.751939 1.99568901 38.495689 1.99568901 1.49568901 38.995689"></polygon>
+                <text id="置顶备份" transform="translate(14.495689, 14.495689) rotate(-45.000000) translate(-14.495689, -14.495689) " font-family="PingFangSC-Regular, PingFang SC" font-size="12" font-weight="normal" fill="#FFFFFF">
+                    <tspan x="2.49568901" y="18.995689">置顶</tspan>
+                </text>
+            </g>
+        </g>
+    </g>
+</svg>
