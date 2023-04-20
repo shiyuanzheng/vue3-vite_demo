@@ -33,11 +33,10 @@
       active-icon="Check"
       inactive-icon="Close"
     />
-    <i-material-symbols-3k-plus-outline />
-    <i-ep-aim />
-    <IconPhAlien />
-    <!-- <i-ph-airplane-light /> -->
-    <!-- <i-ic-baseline-5g /> -->
+    1<i-material-symbols-3k-plus-outline /> 2<i-ep-aim /> 3<IconPhAlien /> 4<IconEpAim /> 5<IEpFold
+      class="v-icon"
+    />
+    6<icon-ep-fold class="v-icon" /> 7<i-ph-airplane-light /> 8<i-ic-baseline-5g />
   </el-header>
 </template>
 
@@ -46,8 +45,22 @@ import { ref } from 'vue'
 import { toggleDark, isDark } from '@/composables'
 console.log('%c [ isDark ] ', 'font-size:13px; background:pink; color:#bf2c9f;', isDark)
 const darkStatus = ref(isDark)
-import IconBaseline5g from '~icons/ic/baseline-5g'
+// import IconBaseline5g from '~icons/ic/baseline-5g'
 import IconPhAlien from '~icons/ph/alien'
 // import IconEpAim from '~icons/ep/aim'
 // console.log('%c [ IconEpAim ] ', 'font-size:13px; background:pink; color:#bf2c9f;', IconEpAim)
 </script>
+
+<style>
+.v-icon {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  font-size: 1em;
+}
+
+.v-icon > svg {
+  width: 100%;
+  height: 100%;
+}
+</style>
