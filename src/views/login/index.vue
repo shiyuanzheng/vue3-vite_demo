@@ -23,7 +23,9 @@
         <el-form-item label="Captcha" prop="captcha">
           <el-input v-model="dataForm.captcha" autocomplete="off" />
         </el-form-item>
-        <img :src="captchaImg" alt="" width="200" height="60" @click="getCaptcha" />
+        <div v-loading="loadingCode">
+          <img :src="captchaImg" alt="" width="200" height="60" @click="getCaptcha" />
+        </div>
       </div>
 
       <el-form-item>
@@ -47,37 +49,22 @@ const ruleFormRef = ref()
 
 const dataForm = reactive({
   username: '',
-  password: '',
-  captcha: ''
+  password: ''
+  // captcha: ''
 })
 
 const rules = {
   username: [{ required: true, message: '填写用户名', trigger: 'blur' }],
-  password: [{ required: true, message: '填写密码', trigger: 'blur' }],
-  captcha: [{ required: true, message: '填写验证码', trigger: 'blur' }]
-}
-
-const submitForm = (formEl) => {
-  if (!formEl) return
-  formEl.validate((valid) => {
-    if (valid) {
-      userStore
-        .loginFun(dataForm)
-        .then((res) => {
-          router.replace({ path: '/home' })
-        })
-        .catch((err) => {
-          getCaptcha()
-        })
-    } else {
-      return false
-    }
-  })
+  password: [{ required: true, message: '填写密码', trigger: 'blur' }]
+  // captcha: [{ required: true, message: '填写验证码', trigger: 'blur' }]
 }
 
 const captchaImg = ref()
+const loadingCode = ref(false)
 const getCaptcha = async () => {
   dataForm.uuid = uuidv4()
+  loadingCode.value = true
+  console.log('%c [ loadingCode ] ', 'font-size:13px; background:pink; color:#bf2c9f;', loadingCode)
   try {
     captchaImg.value = (
       await proxy.$http.get(`captcha`, {
@@ -85,8 +72,25 @@ const getCaptcha = async () => {
       })
     ).data
   } catch (error) {
+    console.log('%c [ error ] ', 'font-size:13px; background:pink; color:#bf2c9f;', error)
+    throw error
+  } finally {
+    loadingCode.value = false
+  }
+}
+// onMounted(() => {
+//   getCaptcha()
+// })
+
+const submitForm = async (formEl) => {
+  if (!formEl) return
+  try {
+    await formEl.validate()
+    await userStore.loginFun(dataForm)
+    router.replace({ path: '/home' })
+  } catch (error) {
+    // getCaptcha()
     throw error
   }
 }
-getCaptcha()
 </script>
