@@ -20,27 +20,37 @@ const router = createRouter({
  * @return {*}
  */
 router.beforeEach(async (to, from, next) => {
+  // 开启进度条
+  NProgress.start()
   const { generateMenus, getIsDynamicAddedRoute } = usePermissionStore()
   const { setLogout } = useUserStore()
-  NProgress.start()
+
+  // 如果已经登录
   if (getToken()) {
+    // 如果是动态添加路由
     if (getIsDynamicAddedRoute) {
       NProgress.done()
       return next()
     }
     try {
+      // 获取异步路由
       const asyncRoutes = await generateMenus()
+      // 遍历异步路由
       asyncRoutes.forEach((route) => {
+        // 添加路由
         router.addRoute('layout', route)
       })
 
+      // 跳转到指定路由
       next({ path: `${to.path}`, replace: true })
     } catch (error) {
+      // 如果出错，跳转到登录页面
       next('/login')
       setLogout()
-      throw new Error(error)
+      throw error
     }
   } else {
+    // 如果未登录，则跳转到登录页面
     if (whiteRouteList.includes(to.path)) next()
     else {
       next('/login')
