@@ -1,6 +1,9 @@
 import { defineStore } from 'pinia'
 import request from '@/utils/request'
 
+import { store } from '@/stores/pinia'
+
+
 let modules = import.meta.glob('../../views/**/index.vue')
 
 // const componentCache = new Map()
@@ -26,17 +29,17 @@ export const usePermissionStore = defineStore('permission', {
     getIsDynamicAddedRoute: (state) => state.isDynamicAddedRoute
   },
   actions: {
-    setMenuList(list) {
+    setMenuList (list) {
       this.$patch({ menuList: list })
     },
-    setDynamicMenuRoutes(routes) {
+    setDynamicMenuRoutes (routes) {
       this.$patch({ dynamicMenuRoutes: routes })
     },
-    setIsDynamicAddedRoute(bool) {
-      this.$patch({ isDynamicAddedRoute: bool })
+    setIsDynamicAddedRoute (bool) {
+      this.isDynamicAddedRoute = bool
     },
 
-    async generateMenus() {
+    async generateMenus () {
       try {
         const { data } = await request.get('sys/menu/nav')
         const routes = await this.fnAddDynamicMenuRoutes(data)
@@ -49,7 +52,7 @@ export const usePermissionStore = defineStore('permission', {
       }
     },
 
-    async fnAddDynamicMenuRoutes(menus = [], routes = []) {
+    async fnAddDynamicMenuRoutes (menus = [], routes = []) {
       const temp = []
       for (const { url = '', icon, id, name: title, children = [] } of menus) {
         if (children && children.length >= 1) {
@@ -70,3 +73,8 @@ export const usePermissionStore = defineStore('permission', {
     }
   }
 })
+
+// Need to be used outside the setup
+export function usePermissionStoreWithOut () {
+  return usePermissionStore(store)
+}

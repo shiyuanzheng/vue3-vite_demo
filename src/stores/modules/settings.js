@@ -1,6 +1,8 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
+import { store } from '@/stores/pinia'
+
 export const useSettingsStore = defineStore('settings', {
   persist: true,
   state: () => ({
@@ -42,3 +44,8 @@ export const useSettingsStore = defineStore('settings', {
     }
   }
 })
+
+// Need to be used outside the setup
+export function useSettingsStoreWithOut() {
+  return useSettingsStore(store)
+}
